@@ -4,12 +4,10 @@ import numpy
 from Sensor import Sensor
 class Temperatura(Sensor):
     fahrenheit:float
-    def __init__(self, time, file):
-        super().__init__(time, file)
-        while True:
-            self.fahrenheit=self.generateValues()
-            print('send alert')
-            sleep(super().time)
+    def __init__(self,file):
+        super().__init__(   file)
+        self.fahrenheit=self.generateValues()
+        print('send alert')
                 
     def generateValues(self):
         correct,out_of_range,incorrect=super().readFile()
