@@ -4,12 +4,9 @@ import numpy
 from Sensor import Sensor
 class Oxigeno(Sensor):
     oxigeno:float
-    def __init__(self, time, file):
-        super().__init__(time, file)
-        while True:
-            self.oxigeno=self.generateValues()
-            print('send alert')
-            sleep(super().time)
+    def __init__(self,  file):
+        super().__init__(file)
+        self.oxigeno=self.generateValues()
             
     
     def generateValues(self):

@@ -3,8 +3,8 @@ from time import sleep
 import numpy
 from Sensor import Sensor
 class Ph(Sensor):
-    def __init__(self,time, file):
-        super().__init__(time, file)
+    def __init__(self, file):
+        super().__init__( file)
         self.ph=self.generateValues()
             
 
