@@ -7,7 +7,6 @@ class Temperatura(Sensor):
     def __init__(self,file):
         super().__init__(   file)
         self.fahrenheit=self.generateValues()
-        print('send alert')
                 
     def generateValues(self):
         correct,out_of_range,incorrect=super().readFile()
