@@ -5,57 +5,53 @@ from Temperatura import Temperatura
 import argparse
 import zmq
 
+def sendInfo(type: str, generate):
+    socket.bind(f"tcp://{args.addr}:{args.port}")
+    while True:
+        sleep(args.time)
+        valor = str(generate.generateValues())
+        socket.send(type.encode() + valor.encode())
+        print(type.upper() + valor)
+
+
 parser = argparse.ArgumentParser(description="Publisher/suscriber implementation")
 parser.add_argument("--port", "-p", default=5555, type=int, help="port number")
 parser.add_argument(
     "--addr", "-a", default="127.0.0.1", type=str, help="Ip address IPV4"
 )
 parser.add_argument(
-    "--type",
-    "-t",
-    default="Sensor",
-    type=str,
-    help="Type [Sensor]",
-    choices=["Sensor", "Monitor"],
-)
-parser.add_argument(
     "--sentype",
     "-s",
+    required=True,
     default="Ph",
     type=str,
     help="Sensor type",
-    choices=["Ph","Temperatura", "Oxigeno"],
+    choices=["Ph", "Temperatura", "Oxigeno"],
 )
 parser.add_argument("--time", "-tm", default=10, type=int, help="Time")
 parser.add_argument("--file", "-f", default="config.txt", type=str, help="file")
+parser.add_argument("--monitoraddr", "-ma", type=str, help="monitor addr")
 args = parser.parse_args()
+
+
+def sendInfo(generate):
+    socket.bind(f"tcp://{args.addr}:{args.port}")
+    while True:
+        sleep(args.time)
+        valor = str(generate.generateValues())
+        socket.send(args.sentype.encode() + b": " + valor.encode())
+        print(args.sentype + ":" + valor)
+
+
 # -------------------------------------
 context = zmq.Context()
 socket = context.socket(zmq.PUB)
-if args.type == "Sensor":
-    if args.sentype == "Ph":
-        ph = Ph(args.file)
-        socket.bind(f"tcp://{args.addr}:{args.port}")
-        while True:
-            sleep(args.time)
-            valor = str(ph.generateValues())
-            socket.send(b'Ph:'+valor.encode())
-            print('PH:' +valor)
-    elif args.sentype == "Temperatura":
-        temperature = Temperatura(args.file)
-        socket.bind(f"tcp://{args.addr}:{args.port}")
-        while True:
-            sleep(args.time)
-            valor = str(temperature.generateValues())
-            socket.send(b'Temperatura:'+valor.encode())
-            print('Temperatura:' +valor)
-    elif args.sentype == "Oxigeno":
-        oxygen = Oxigeno(args.file)
-        socket.bind(f"tcp://{args.addr}:{args.port}")
-        while True:
-            sleep(args.time)
-            valor = str(oxygen.generateValues())
-            print('Oxigeno:' +valor)
-            socket.send(b'Oxigeno:'+valor.encode())
-elif args.type == "Monitor":
-    print("sda")
+if args.sentype == "Ph":
+    ph = Ph(args.file)
+    sendInfo(ph)
+elif args.sentype == "Temperatura":
+    temperature = Temperatura(args.file)
+    sendInfo(temperature)
+elif args.sentype == "Oxigeno":
+    oxygen = Oxigeno(args.file)
+    sendInfo(oxygen)
