@@ -5,7 +5,7 @@ import logging
 from getpass import getpass
 import os
 import zmq
-from Monitor import Monitor
+from Models.Monitor import Monitor
 SYSTEM_PORT = 5999
 from termcolor import colored
 

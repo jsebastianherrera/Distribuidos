@@ -1,21 +1,21 @@
 import random
 from time import sleep
 import numpy
-from Sensor import Sensor
-class Ph(Sensor):
-    def __init__(self, file):
-        super().__init__( file)
-        self.ph=self.generateValues()
-            
-
+from Models.Sensor import Sensor
+class Temperatura(Sensor):
+    fahrenheit:float
+    def __init__(self,file):
+        super().__init__(   file)
+        self.fahrenheit=self.generateValues()
+                
     def generateValues(self):
         correct,out_of_range,incorrect=super().readFile()
         a=list()
         for i in range(0,int(correct*10)):
-            a.append(round(numpy.random.uniform(6.0,8.0),1))
+            a.append(round(numpy.random.uniform(68,89),1))
         for i in range(0,int(out_of_range*10)):
-            a.append(round(numpy.random.uniform(0.0,5.9),1))
+            a.append(round(numpy.random.uniform(0.0,59.9),1))
         for i in range(0,int(incorrect*10)):
             a.append(round(numpy.random.uniform(-999,-1),1))                    
         return random.choice(a)
-
+     

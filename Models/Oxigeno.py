@@ -1,7 +1,7 @@
 import random
 from time import sleep
 import numpy
-from Sensor import Sensor
+from Models.Sensor import Sensor
 class Oxigeno(Sensor):
     oxigeno:float
     def __init__(self,  file):
