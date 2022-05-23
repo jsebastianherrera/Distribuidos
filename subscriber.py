@@ -6,7 +6,7 @@ from getpass import getpass
 import os
 import zmq
 from Models.Monitor import Monitor
-SYSTEM_PORT = 4444
+SYSTEM_PORT = 5554
 from termcolor import colored
 
 def user_validation(user: str) -> bool:
