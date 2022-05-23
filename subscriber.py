@@ -11,8 +11,6 @@ SYSTEM_PORT = 5554
 SYSTEM_IP = "192.168.0.56"
 from termcolor import colored
 
-pub = zmq.Context().socket(zmq.PUB)
-pub.bind(f"tcp://{SYSTEM_IP}:{SYSTEM_PORT}")
 
 
 def user_validation(user: str) -> bool:
@@ -49,7 +47,6 @@ def connect(addr: str, port, log: logging, type: str):
                 print(colored(m, "green"))
                 log.info(m.split(":")[0] + ":" + m.split(":")[1])
             else:
-
                 pub.send(type.encode() + b": " + m.split(":")[1].strip().encode())
         else:
             print(
@@ -107,7 +104,8 @@ if __name__ == "__main__":
             or "Oxigeno" in vars(args)["sentype"]
         )
     ):
-
+        pub = zmq.Context().socket(zmq.PUB)
+        pub.bind(f"tcp://{SYSTEM_IP}:{SYSTEM_PORT}")
         logging.basicConfig(
             filename="log.txt",
             level=logging.INFO,
