@@ -8,6 +8,7 @@ import zmq
 from Models.Monitor import Monitor
 
 SYSTEM_PORT = 5554
+SYSTEM_IP = '192.168.0.56'
 from termcolor import colored
 
 
@@ -34,8 +35,8 @@ def connect(addr: str, port, log: logging, type: str):
     socket = context.socket(zmq.SUB)
     socket.connect(f"tcp://{addr}:{port}")
     socket.setsockopt_string(zmq.SUBSCRIBE, "")
-    # pub = context.socket(zmq.PUB)
-    # pub.bind(f"tcp://{args.addr}:{SYSTEM_PORT}")
+    pub = context.socket(zmq.PUB)
+    pub.bind(f"tcp://{SYSTEM_IP}:{SYSTEM_PORT}")
     while True:
         message = socket.recv()
         m = message.decode()
@@ -48,7 +49,7 @@ def connect(addr: str, port, log: logging, type: str):
                 log.info(m.split(":")[0] + ":" + m.split(":")[1])
             else:
                 print("envia")
-                # pub.send(type.encode()+ b': ' + m.split(":")[1].strip().encode())
+                pub.send(type.encode()+ b': ' + m.split(":")[1].strip().encode())
         else:
             print(
                 "Running monitor doesn't support " + m.split(":")[0].strip() + " sensor"
