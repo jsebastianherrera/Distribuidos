@@ -3,13 +3,15 @@ from _thread import *
 import hashlib
 import logging
 from getpass import getpass
-import os
+from time import sleep
 import zmq
 from Models.Monitor import Monitor
+from termcolor import colored
 
 SYSTEM_PORT = 5554
 SYSTEM_IP = "192.168.0.56"
-from termcolor import colored
+context = zmq.Context()
+socket = context.socket(zmq.SUB)
 
 
 def user_validation(user: str) -> bool:
@@ -31,10 +33,7 @@ def user_validation(user: str) -> bool:
 
 
 def connect(addr: str, port, log: logging, type: str):
-    context = zmq.Context()
-    socket = context.socket(zmq.SUB)
     socket.connect(f"tcp://{addr}:{port}")
-    socket.setsockopt_string(zmq.SUBSCRIBE, "")
     while True:
         message = socket.recv()
         m = message.decode()
@@ -47,7 +46,10 @@ def connect(addr: str, port, log: logging, type: str):
                 log.info(m.split(":")[0] + ":" + m.split(":")[1])
             else:
                 print(colored(m, "red"))
-                req.send(type.encode() + b": " + m.split(":")[1].strip().encode())
+                req=context.socket(zmq.REQ)
+                req.connect(f"tcp://{SYSTEM_IP}:{SYSTEM_PORT}")
+                req.send(m.encode())
+                req.close()
         else:
             print(
                 "Running monitor doesn't support " + m.split(":")[0].strip() + " sensor"
@@ -81,18 +83,17 @@ if __name__ == "__main__":
         choices=["Ph", "Temperatura", "Oxigeno"],
     )
     args = parser.parse_args()
-    context = zmq.Context()
-    req = zmq.Context().socket(zmq.PUB)
-    req.bind(f"tcp://{SYSTEM_IP}:{SYSTEM_PORT}")
     # User validation
     if args.type == "SistemaC" and args.user != None:
         # -------------------------------------
         if user_validation(args.user):
-            socket = context.socket(zmq.SUB)
-            socket.connect(f"tcp://{SYSTEM_IP}:{SYSTEM_PORT}")
+            rep = context.socket(zmq.REP)
+            rep.bind(f"tcp://{SYSTEM_IP}:{SYSTEM_PORT}")
             while True:
                 message = socket.recv()
                 print(colored(message.decode(), "red"))
+                sleep(1)
+                rep.send(b"A")
         else:
             print("Incorrect information")
 
