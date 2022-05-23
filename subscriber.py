@@ -10,7 +10,6 @@ from Models.Monitor import Monitor
 SYSTEM_PORT = 5554
 SYSTEM_IP = "192.168.0.56"
 from termcolor import colored
-req = zmq.Context().socket(zmq.PUB)
 
 
 def user_validation(user: str) -> bool:
@@ -83,6 +82,8 @@ if __name__ == "__main__":
     )
     args = parser.parse_args()
     context = zmq.Context()
+    req = zmq.Context().socket(zmq.PUB)
+    req.bind(f"tcp://{SYSTEM_IP}:{SYSTEM_PORT}")
     # User validation
     if args.type == "SistemaC" and args.user != None:
         # -------------------------------------
