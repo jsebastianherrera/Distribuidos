@@ -46,6 +46,7 @@ def connect(addr: str, port, log: logging, type: str):
                 print(colored(m, "green"))
                 log.info(m.split(":")[0] + ":" + m.split(":")[1])
             else:
+                print(colored(m, "red"))
                 req = context.socket(zmq.REQ)
                 req.connect(f"tcp://{SYSTEM_IP}:{SYSTEM_PORT}")
                 req.send(type.encode() + b": " + m.split(":")[1].strip().encode())
@@ -88,7 +89,7 @@ if __name__ == "__main__":
         # -------------------------------------
         if user_validation(args.user):
             socket = context.socket(zmq.REP)
-            socket.connect(f"tcp://{args.addr}:{SYSTEM_PORT}")
+            socket.connect(f"tcp://{SYSTEM_IP}:{SYSTEM_PORT}")
             while True:
                 message = socket.recv()
                 print(colored(message.decode(), "red"))
