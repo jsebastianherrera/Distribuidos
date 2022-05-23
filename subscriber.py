@@ -6,8 +6,10 @@ from getpass import getpass
 import os
 import zmq
 from Models.Monitor import Monitor
+
 SYSTEM_PORT = 5554
 from termcolor import colored
+
 
 def user_validation(user: str) -> bool:
     with open("DB/allowed.txt") as f:
@@ -19,7 +21,8 @@ def user_validation(user: str) -> bool:
         for d in data:
             if (
                 d[0] == user
-                and hashlib.md5(getpass("Password:").encode()).hexdigest().upper() == d[1]
+                and hashlib.md5(getpass("Password:").encode()).hexdigest().upper()
+                == d[1]
             ):
                 return True
 
@@ -31,8 +34,8 @@ def connect(addr: str, port, log: logging, type: str):
     socket = context.socket(zmq.SUB)
     socket.connect(f"tcp://{addr}:{port}")
     socket.setsockopt_string(zmq.SUBSCRIBE, "")
-    pub = context.socket(zmq.PUB)
-    pub.bind(f"tcp://{args.addr}:{SYSTEM_PORT}")
+    # pub = context.socket(zmq.PUB)
+    # pub.bind(f"tcp://{args.addr}:{SYSTEM_PORT}")
     while True:
         message = socket.recv()
         m = message.decode()
@@ -41,10 +44,11 @@ def connect(addr: str, port, log: logging, type: str):
                 type=m.split(":")[0].strip(),
                 value=float(m.split(":")[1].strip()),
             ):
-                print(colored(m,'green'))
+                print(colored(m, "green"))
                 log.info(m.split(":")[0] + ":" + m.split(":")[1])
             else:
-                pub.send(type.encode()+ b': ' + m.split(":")[1].strip().encode())
+                print("envia")
+                # pub.send(type.encode()+ b': ' + m.split(":")[1].strip().encode())
         else:
             print(
                 "Running monitor doesn't support " + m.split(":")[0].strip() + " sensor"
@@ -88,7 +92,7 @@ if __name__ == "__main__":
             socket.setsockopt_string(zmq.SUBSCRIBE, "")
             while True:
                 message = socket.recv()
-                print(colored(message.decode(),'red'))
+                print(colored(message.decode(), "red"))
         else:
             print("Incorrect information")
 
