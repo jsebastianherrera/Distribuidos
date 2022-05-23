@@ -13,13 +13,14 @@ import signal
 def handler(signum, frame):
     res = input("Ctrl-c was pressed. Do you really want to exit? y/n ")
     if res == "y":
-        socket.close()
         path = os.path.abspath(__file__)
-       # os.system("py " + path+" -s "+ args.sentype  )
+        # os.system("py " + path+" -s "+ args.sentype  )
         exit(1)
 
 
 def sendInfo(generate):
+    context = zmq.Context()
+    socket = context.socket(zmq.PUB)
     socket.bind(f"tcp://{args.addr}:{args.port}")
     while True:
         sleep(args.time)
@@ -49,8 +50,6 @@ if __name__ == "__main__":
         "--file", "-f", default="Extra/config.txt", type=str, help="file"
     )
     args = parser.parse_args()
-    context = zmq.Context()
-    socket = context.socket(zmq.PUB)
     if args.sentype == "Ph":
         ph = Ph(args.file)
         sendInfo(ph)
