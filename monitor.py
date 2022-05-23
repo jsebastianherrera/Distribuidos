@@ -16,6 +16,7 @@ def connect(addr: str, port, log: logging, type: str):
     context = zmq.Context()
     socket = context.socket(zmq.SUB)
     socket.connect(f"tcp://{addr}:{port}")
+    socket.setsockopt_string(zmq.SUBSCRIBE, '')
     while True:
         message = socket.recv()
         m = message.decode()
