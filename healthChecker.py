@@ -18,13 +18,12 @@ def ping(ip):
     if ping_reply.returncode == 0:
         # ping will return 0 success if destination is unreachable so I have to check this
         if "unreachable" in str(ping_reply.stdout):
-            result = colored("RIP %s" % ip, "red")
+            print(colored("RIP %s" % ip, "red"))
         else:
-            result = colored("BEATING %s" % ip, "green")
+            print(colored("BEATING %s" % ip, "green"))
     elif ping_reply.returncode == 1:
-        result = colored("RIP %s" % ip,"red")
-    print(result)
-
+         print(colored("RIP %s" % ip,"red"))
+   
 
 while True:
     for ip in args.addr:
