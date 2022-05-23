@@ -23,7 +23,7 @@ def ping(ip):
         else:
             result = colored("BEATING %s" % ip, "green")
     elif ping_reply.returncode == 1:
-        result = "RIP %s" % ip
+        result = colored("RIP %s" % ip,"red")
     print(result)
 
 

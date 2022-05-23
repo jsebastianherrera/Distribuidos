@@ -6,7 +6,7 @@ from getpass import getpass
 import os
 import zmq
 from Models.Monitor import Monitor
-SYSTEM_PORT = 5999
+SYSTEM_PORT = 4444
 from termcolor import colored
 
 def user_validation(user: str) -> bool:
@@ -53,7 +53,6 @@ def connect(addr: str, port, log: logging, type: str):
 
 
 if __name__ == "__main__":
-    os.system('color')
     parser = argparse.ArgumentParser(description="Publisher/suscriber implementation")
     parser.add_argument(
         "--port", "-p", nargs="*", default=5555, type=int, help="port number"
