@@ -89,7 +89,6 @@ if __name__ == "__main__":
         if user_validation(args.user):
             socket = context.socket(zmq.REP)
             socket.connect(f"tcp://{args.addr}:{SYSTEM_PORT}")
-            socket.setsockopt_string(zmq.SUBSCRIBE, "")
             while True:
                 message = socket.recv()
                 print(colored(message.decode(), "red"))
