@@ -46,9 +46,9 @@ def connect(addr: str, port, log: logging, type: str):
                 print(colored(m, "green"))
                 log.info(m.split(":")[0] + ":" + m.split(":")[1])
             else:
-                pub = context.socket(zmq.PUB)
-                pub.bind(f"tcp://{SYSTEM_IP}:{SYSTEM_PORT}")
-                pub.send(type.encode() + b": " + m.split(":")[1].strip().encode())
+                req = context.socket(zmq.REQ)
+                req.connect(f"tcp://{SYSTEM_IP}:{SYSTEM_PORT}")
+                req.send(type.encode() + b": " + m.split(":")[1].strip().encode())
         else:
             print(
                 "Running monitor doesn't support " + m.split(":")[0].strip() + " sensor"
@@ -87,7 +87,7 @@ if __name__ == "__main__":
     if args.type == "SistemaC" and args.user != None:
         # -------------------------------------
         if user_validation(args.user):
-            socket = context.socket(zmq.SUB)
+            socket = context.socket(zmq.REP)
             socket.connect(f"tcp://{args.addr}:{SYSTEM_PORT}")
             socket.setsockopt_string(zmq.SUBSCRIBE, "")
             while True:
