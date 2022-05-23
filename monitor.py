@@ -10,11 +10,11 @@ from termcolor import colored
 
 SYSTEM_PORT = 5554
 SYSTEM_IP = "192.168.0.56"
-context = zmq.Context()
-socket = context.socket(zmq.SUB)
 
 
 def connect(addr: str, port, log: logging, type: str):
+    context = zmq.Context()
+    socket = context.socket(zmq.SUB)
     socket.connect(f"tcp://{addr}:{port}")
     while True:
         message = socket.recv()

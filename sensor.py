@@ -48,7 +48,6 @@ if __name__ == "__main__":
     parser.add_argument(
         "--file", "-f", default="Extra/config.txt", type=str, help="file"
     )
-    parser.add_argument("--monitoraddr", "-ma", type=str, help="monitor addr")
     args = parser.parse_args()
     context = zmq.Context()
     socket = context.socket(zmq.PUB)
