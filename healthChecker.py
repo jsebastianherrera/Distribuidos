@@ -13,7 +13,7 @@ args = parser.parse_args()
 
 def ping(ip):
     ping_reply = subprocess.run(
-        ["ping", "-n", "2", ip], stderr=subprocess.PIPE, stdout=subprocess.PIPE
+        ["ping", "-c", "2", ip], stderr=subprocess.PIPE, stdout=subprocess.PIPE
     )
     if ping_reply.returncode == 0:
         # ping will return 0 success if destination is unreachable so I have to check this
