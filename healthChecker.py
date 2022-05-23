@@ -10,7 +10,6 @@ parser.add_argument(
     "--addr", "-a", nargs="+", required=True, help="port number"
 )
 args = parser.parse_args()
-os.system("color")
 
 def ping(ip):
     ping_reply = subprocess.run(
