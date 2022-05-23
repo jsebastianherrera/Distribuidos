@@ -35,8 +35,6 @@ def connect(addr: str, port, log: logging, type: str):
     socket = context.socket(zmq.SUB)
     socket.connect(f"tcp://{addr}:{port}")
     socket.setsockopt_string(zmq.SUBSCRIBE, "")
-    pub = zmq.Context().socket(zmq.PUB)
-    pub.bind(f"tcp://{SYSTEM_IP}:{SYSTEM_PORT}")
     while True:
         message = socket.recv()
         m = message.decode()
@@ -48,7 +46,8 @@ def connect(addr: str, port, log: logging, type: str):
                 print(colored(m, "green"))
                 log.info(m.split(":")[0] + ":" + m.split(":")[1])
             else:
-                print("envia")
+                pub = zmq.Context().socket(zmq.PUB)
+                pub.bind(f"tcp://{SYSTEM_IP}:{SYSTEM_PORT}")
                 pub.send(type.encode() + b": " + m.split(":")[1].strip().encode())
         else:
             print(
