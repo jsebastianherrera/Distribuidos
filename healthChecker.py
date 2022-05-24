@@ -7,7 +7,7 @@ from time import sleep
 
 parser = argparse.ArgumentParser(description="Publisher/suscriber implementation")
 parser.add_argument(
-    "--addr", "-a", nargs="+", required=True, help="port number"
+    "--addr", "-a", nargs="+", required=True, help="addresses"
 )
 args = parser.parse_args()
 
