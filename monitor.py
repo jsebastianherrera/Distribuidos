@@ -20,18 +20,24 @@ def connect(addr: str, port, log: logging, type: str):
     while True:
         message = socket.recv()
         m = message.decode()
-        if Monitor().checkQualityParameters(
+        if m.split(":")[0].strip() == type:
+            if Monitor().checkQualityParameters(
                 type=m.split(":")[0].strip(),
                 value=float(m.split(":")[1].strip()),
-        ):
+            ):
                 print(colored(m, "green"))
                 log.info(m.split(":")[0] + ":" + m.split(":")[1])
-        else:
+            else:
                 push.connect(f"tcp://{SYSTEM_IP}:{SYSTEM_PORT}")
                 push.send(m.encode())
                 print(colored(m, "red"))
 
-         
+        else:
+            print(
+                "Running monitor doesn't support " + m.split(":")[0].strip() + " sensor"
+            )
+            break
+
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Publisher/suscriber implementation")

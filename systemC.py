@@ -12,22 +12,15 @@ SYSTEM_PORT = 5554
 def connect(pull: zmq.Socket):
     while True:
         m = pull.recv().decode()
-        if m.split(":")[0].strip() == type:
-            if Monitor().checkQualityParameters(
-                type=m.split(":")[0].strip(),
-                value=float(m.split(":")[1].strip()),
-            ):
-                print(colored(m, "green"))
-
-            else:
-                print(colored(m, "red"))
-
+        if Monitor().checkQualityParameters(
+            type=m.split(":")[0].strip(),
+            value=float(m.split(":")[1].strip()),
+        ):
+            print(colored(m, "green"))
         else:
-            print(
-                "Running monitor doesn't support " + m.split(":")[0].strip() + " sensor"
-            )
-            break
+            print(colored(m, "red"))
 
+    
 
 def user_validation(user: str) -> bool:
     with open("DB/allowed.txt") as f:
