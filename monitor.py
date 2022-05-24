@@ -29,6 +29,7 @@ def connect(addr: str, port, log: logging, type: str):
                 log.info(m.split(":")[0] + ":" + m.split(":")[1])
             else:
                 push.connect(f"tcp://{SYSTEM_IP}:{SYSTEM_PORT}")
+                push.send(m.encode())
                 print(colored(m, "red"))
 
         else:
