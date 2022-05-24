@@ -10,18 +10,18 @@ import zmq
 import signal
 
 
-def handler(signum, frame):
-    res = input("Ctrl-c was pressed. Do you really want to exit? y/n ")
-    if res == "y":
-        path = os.path.abspath(__file__)
-        # os.system("py " + path+" -s "+ args.sentype  )
-        exit(1)
+# def handler(signum, frame):
+#     res = input("Ctrl-c was pressed. Do you really want to exit? y/n ")
+#     if res == "y":
+#         path = os.path.abspath(__file__)
+#         # os.system("py " + path+" -s "+ args.sentype  )
+#         exit(1)
 
 
 def sendInfo(generate):
     context = zmq.Context()
     socket = context.socket(zmq.PUB)
-    socket.bind(f"tcp://{args.addr}:{args.port}")
+    socket.bind(f"tcp://*:{args.port}")
     while True:
         sleep(args.time)
         valor = str(generate.generateValues())
@@ -30,12 +30,9 @@ def sendInfo(generate):
 
 
 if __name__ == "__main__":
-    signal.signal(signal.SIGINT, handler)
+    #signal.signal(signal.SIGINT, handler)
     parser = argparse.ArgumentParser(description="Publisher/suscriber implementation")
     parser.add_argument("--port", "-p", default=5555, type=int, help="port number")
-    parser.add_argument(
-        "--addr", "-a", default="127.0.0.1", type=str, help="Ip address IPV4"
-    )
     parser.add_argument(
         "--sentype",
         "-s",
