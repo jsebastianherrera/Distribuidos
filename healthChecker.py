@@ -5,27 +5,16 @@ from _thread import *
 from termcolor import colored
 from time import sleep
 
-parser = argparse.ArgumentParser(description="Publisher/suscriber implementation")
+parser = argparse.ArgumentParser(description="Healthcheck")
 parser.add_argument(
-    "--addr", "-a", nargs="+", required=True, help="addresses"
+    "--num", "-n",  required=True, help="Quantity"
 )
 args = parser.parse_args()
 
-def ping(ip):
-    ping_reply = subprocess.run(
-        ["ping", "-c", "2", ip], stderr=subprocess.PIPE, stdout=subprocess.PIPE
-    )
-    if ping_reply.returncode == 0:
-        # ping will return 0 success if destination is unreachable so I have to check this
-        if "unreachable" in str(ping_reply.stdout):
-            print(colored("RIP %s" % ip, "red"))
-        else:
-            print(colored("BEATING %s" % ip, "green"))
-    elif ping_reply.returncode == 1:
-         print(colored("RIP %s" % ip,"red"))
-   
-
+def check():
+    output=subprocess.run(["ps aux | grep \"python3 monitor.py\" | awk '{printf $2 " " }{for(i=11;i<=NF;i++) printf  $i " "}{print " " }'"],capture_output=True).stdout
+    print(output)
+monitors=list()
 while True:
-    for ip in args.addr:
-        start_new_thread(ping, (ip,))
+    start_new_thread(check,)
     sleep(5)
