@@ -12,9 +12,9 @@ parser.add_argument(
 args = parser.parse_args()
 
 def check():
-    output=subprocess.run(["ps aux | grep \"python3 monitor.py\" | awk '{printf $2 " " }{for(i=11;i<=NF;i++) printf  $i " "}{print " " }'"],capture_output=True).stdout
-    print(output)
+    output=subprocess.run(["ps","aux","|","grep","\"python3 monitor.py\"","|","awk","'{printf $2 " " }{for(i=11;i<=NF;i++) printf  $i " "}{print " " }'","2>&1"],capture_output=True).stdout
+    print(output.strip().decode())
 monitors=list()
 while True:
-    start_new_thread(check,)
+    start_new_thread(check,())
     sleep(5)
