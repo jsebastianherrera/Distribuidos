@@ -12,6 +12,7 @@ SYSTEM_PORT = 5554
 SYSTEM_IP = "192.168.0.56"
 context = zmq.Context()
 push = context.socket(zmq.PUSH)
+push.bind(f"tcp://{SYSTEM_IP}:{SYSTEM_PORT}")
 socket = context.socket(zmq.SUB)
 socket.setsockopt_string(zmq.SUBSCRIBE, '')
 def connect(addr: str, port, log: logging, type: str):
@@ -27,7 +28,6 @@ def connect(addr: str, port, log: logging, type: str):
                 print(colored(m, "green"))
                 log.info(m.split(":")[0] + ":" + m.split(":")[1])
             else:
-                push.bind(f"tcp://{SYSTEM_IP}:{SYSTEM_PORT}")
                 print(colored(m, "red"))
 
         else:

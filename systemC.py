@@ -6,15 +6,12 @@ from termcolor import colored
 from _thread import *
 
 from Models.Monitor import Monitor
-
 SYSTEM_PORT = 5554
-SYSTEM_IP = "192.168.0.56"
 
 
 def connect(pull: zmq.Socket):
     while True:
-        message = pull.recv()
-        m = message.decode()
+        m = pull.recv().decode()
         if m.split(":")[0].strip() == type:
             if Monitor().checkQualityParameters(
                 type=m.split(":")[0].strip(),
