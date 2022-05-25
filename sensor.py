@@ -6,13 +6,6 @@ import argparse
 import zmq
 
 
-# def handler(signum, frame):
-#     res = input("Ctrl-c was pressed. Do you really want to exit? y/n ")
-#     if res == "y":
-#         path = os.path.abspath(__file__)
-#         # os.system("py " + path+" -s "+ args.sentype  )
-#         exit(1)
-
 
 def sendInfo(generate):
     context = zmq.Context()
@@ -28,7 +21,7 @@ def sendInfo(generate):
 if __name__ == "__main__":
     #signal.signal(signal.SIGINT, handler)
     parser = argparse.ArgumentParser(description="Publisher/suscriber implementation")
-    parser.add_argument("--port", "-p", default=5555, type=int, help="port number")
+    parser.add_argument("--port", "-p",required=True, type=int, help="port number")
     parser.add_argument(
         "--sentype",
         "-s",

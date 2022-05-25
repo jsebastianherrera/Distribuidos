@@ -1,4 +1,2 @@
-18761 python3 monitor.py -a 192.168.0.55 -p 5558 5556 -s Temperatura  
-20092 python3 monitor.py -a 192.168.0.55 -p 5558 5556 -s Temperatura  
-20112 sh -c ps aux | grep "python3 monitor.py" | awk '{printf $2 " " }{for(i=11;i<=NF;i++) printf $i " "}{print " " }' > output.txt  
-20114 grep python3 monitor.py  
+28922 sh -c ps aux | grep "python3 monitor.py" | awk '{printf $2 " " }{for(i=11;i<=NF;i++) printf $i " "}{print " " }' > output.txt  
+28924 grep python3 monitor.py  

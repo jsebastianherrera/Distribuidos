@@ -5,6 +5,7 @@ import hashlib
 import logging
 from getpass import getpass
 import os
+import signal
 import subprocess
 from time import sleep
 import zmq
@@ -19,9 +20,23 @@ socket = context.socket(zmq.SUB)
 socket.setsockopt_string(zmq.SUBSCRIBE, "")
 
 
+def resume(signum, frame):
+    print(colored("Monitor is back..."))
+    if isinstance(args.port, list):
+        for i in range(0, len(list(args.port))):
+            start_new_thread(connect, (args.addr, args.port[i], logging, args.sentype))
+    else:
+        start_new_thread(connect, (args.addr, args.port, logging, args.sentype))
+    while 1:
+        pass
+
+
 def handler(signum, frame):
-    subprocess.run(["kill", "-STOP", os.getpid()])
     print(colored("Interrupting monitor ..."))
+    for i in args.port:
+        socket.disconnect(f"tcp://{args.addr}:{i}")
+    push.disconnect(f"tcp://{SYSTEM_IP}:{SYSTEM_PORT}")
+    subprocess.run(["kill", "-STOP", str(os.getpid())])
 
 
 def connect(addr: str, port, log: logging, type: str):
@@ -50,6 +65,8 @@ def connect(addr: str, port, log: logging, type: str):
 
 
 if __name__ == "__main__":
+    signal.signal(signal.SIGCONT, resume)
+    signal.signal(signal.SIGINT, handler)
     parser = argparse.ArgumentParser(description="Publisher/suscriber implementation")
     parser.add_argument(
         "--port", "-p", nargs="*", required=True, type=int, help="port number"
