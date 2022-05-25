@@ -24,7 +24,7 @@ def start(signum, frame):
     print(colored("Starting replica.."))
     if isinstance(args.port, list):
         for i in range(0, len(list(args.port))):
-            start_new_thread(connect, (args.addr, args.port[i], logging, args.sentype))
+            start_new_thread(connect, (args.addr, str(args.port[i]).strip(), logging, args.sentype))
     else:
         start_new_thread(connect, (args.addr, args.port, logging, args.sentype))
     while 1:
@@ -39,7 +39,7 @@ def reload(signum, frame):
 
 
 def connect(addr: str, port, log: logging, type: str):
-    socket.connect(f"tcp://{addr}:{port.strip()}")
+    socket.connect(f"tcp://{addr}:{port}")
 
     while True:
         message = socket.recv()
