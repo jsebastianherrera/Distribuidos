@@ -1,8 +1,11 @@
 import argparse
 from _thread import *
+from _thread import *
 import hashlib
 import logging
 from getpass import getpass
+import os
+import subprocess
 from time import sleep
 import zmq
 from Models.Monitor import Monitor
@@ -13,7 +16,14 @@ SYSTEM_IP = "192.168.0.56"
 context = zmq.Context()
 push = context.socket(zmq.PUSH)
 socket = context.socket(zmq.SUB)
-socket.setsockopt_string(zmq.SUBSCRIBE, '')
+socket.setsockopt_string(zmq.SUBSCRIBE, "")
+
+
+def handler(signum, frame):
+    subprocess.run(["kill", "-STOP", os.getpid()])
+    print(colored("Interrupting monitor ..."))
+
+
 def connect(addr: str, port, log: logging, type: str):
     socket.connect(f"tcp://{addr}:{port}")
 
@@ -42,11 +52,9 @@ def connect(addr: str, port, log: logging, type: str):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Publisher/suscriber implementation")
     parser.add_argument(
-        "--port", "-p", nargs="*", default=5555, type=int, help="port number"
+        "--port", "-p", nargs="*", required=True, type=int, help="port number"
     )
-    parser.add_argument(
-        "--addr", "-a", default="127.0.0.1", type=str, help="Ip address IPV4"
-    )
+    parser.add_argument("--addr", "-a", required=True, type=str, help="Ip address IPV4")
 
     parser.add_argument(
         "--sentype",

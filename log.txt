@@ -1,0 +1,6 @@
+2022-05-24 17:06:36,819 INFO     Ph: 6.6
+2022-05-24 21:09:44,023 INFO     Temperatura: 73.9
+2022-05-24 21:09:54,027 INFO     Temperatura: 80.8
+2022-05-24 21:10:04,032 INFO     Temperatura: 84.8
+2022-05-24 21:10:38,236 INFO     Temperatura: 79.6
+2022-05-24 21:10:38,237 INFO     Temperatura: 84.1

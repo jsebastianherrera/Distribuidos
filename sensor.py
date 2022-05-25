@@ -1,13 +1,9 @@
-from http.client import ImproperConnectionState
-import os
-import pathlib
 from time import sleep
 from Models.Ph import Ph
 from Models.Oxigeno import Oxigeno
 from Models.Temperatura import Temperatura
 import argparse
 import zmq
-import signal
 
 
 # def handler(signum, frame):
