@@ -1,7 +1,6 @@
 import argparse
 from _thread import *
 from _thread import *
-import hashlib
 import logging
 from getpass import getpass
 import os
@@ -64,6 +63,7 @@ def connect(addr: str, port, log: logging, type: str):
                 print(colored(m, "green"))
                 log.info(m.split(":")[0] + ":" + m.split(":")[1])
             else:
+                log.info("Redi -> SistemaC: " + m.split(":")[0] + ":" + m.split(":")[1])
                 push.connect(f"tcp://{SYSTEM_IP}:{SYSTEM_PORT}")
                 push.send(m.encode())
                 print(colored(m, "red"))
@@ -92,7 +92,7 @@ if __name__ == "__main__":
     )
     args = parser.parse_args()
     logging.basicConfig(
-        filename="log.txt",
+        filename=f"DB/mon{args.sentype}.txt",
         level=logging.INFO,
         format="{asctime} {levelname:<8} {message}",
         style="{",

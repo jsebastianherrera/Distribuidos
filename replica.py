@@ -54,6 +54,7 @@ def connect(addr: str, port, log: logging, type: str):
             else:
                 push.connect(f"tcp://{SYSTEM_IP}:{SYSTEM_PORT}")
                 push.send(m.encode())
+                log.info("Replica red-> SistemaC " + m.split(":")[0] + ":" + m.split(":")[1])
                 print(colored(m, "red"))
 
         else:
@@ -81,7 +82,7 @@ if __name__ == "__main__":
     )
     args = parser.parse_args()
     logging.basicConfig(
-        filename="log.txt",
+        filename=f"DB/mon{args.sentype}.txt",
         level=logging.INFO,
         format="{asctime} {levelname:<8} {message}",
         style="{",
