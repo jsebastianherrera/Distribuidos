@@ -21,21 +21,32 @@ socket.setsockopt_string(zmq.SUBSCRIBE, "")
 
 
 def resume(signum, frame):
-    print(colored("Monitor is back..."))
-    if isinstance(args.port, list):
-        for i in range(0, len(list(args.port))):
-            start_new_thread(connect, (args.addr, args.port[i], logging, args.sentype))
-    else:
-        start_new_thread(connect, (args.addr, args.port, logging, args.sentype))
-    while 1:
-        pass
+    with open("Trash/pids.txt") as f:
+        lines = f.readlines()
+        for line in lines:
+            split = line.split(" ")
+            if split[0].strip() == str(os.getpid()):
+                subprocess.run(["kill", "-USR1", str(split[1]).strip()])
+        print(colored("Monitor is back..."))
+        if isinstance(args.port, list):
+            for i in range(0, len(list(args.port))):
+                start_new_thread(
+                    connect, (args.addr, args.port[i], logging, args.sentype)
+                )
+        else:
+            start_new_thread(connect, (args.addr, args.port, logging, args.sentype))
+        while 1:
+            pass
 
 
 def handler(signum, frame):
     print(colored("Interrupting monitor ..."))
     for i in args.port:
         socket.disconnect(f"tcp://{args.addr}:{i}")
-    push.disconnect(f"tcp://{SYSTEM_IP}:{SYSTEM_PORT}")
+    try:
+        push.disconnect(f"tcp://{SYSTEM_IP}:{SYSTEM_PORT}")
+    except:
+        print("")
     subprocess.run(["kill", "-STOP", str(os.getpid())])
 
 
@@ -68,9 +79,7 @@ if __name__ == "__main__":
     signal.signal(signal.SIGCONT, resume)
     signal.signal(signal.SIGINT, handler)
     parser = argparse.ArgumentParser(description="Publisher/suscriber implementation")
-    parser.add_argument(
-        "--port", "-p", nargs="*", required=True, type=int, help="port number"
-    )
+    parser.add_argument("--port", "-p", nargs="*", required=True, help="port number")
     parser.add_argument("--addr", "-a", required=True, type=str, help="Ip address IPV4")
 
     parser.add_argument(
@@ -88,10 +97,29 @@ if __name__ == "__main__":
         format="{asctime} {levelname:<8} {message}",
         style="{",
     )
+    pp = ""
     if isinstance(args.port, list):
+        for i in list(args.port):
+            pp += str(i) + " "
+        subprocess.Popen(
+            ["python3", "replica.py", "-a", args.addr, "-s", args.sentype, "-p", pp],
+        )
+
         for i in range(0, len(list(args.port))):
             start_new_thread(connect, (args.addr, args.port[i], logging, args.sentype))
     else:
+        subprocess.Popen(
+            [
+                "python3",
+                "replica.py",
+                "-a",
+                args.addr,
+                "-s",
+                args.sentype,
+                "-p",
+                args.port,
+            ]
+        )
         start_new_thread(connect, (args.addr, args.port, logging, args.sentype))
     while 1:
         pass

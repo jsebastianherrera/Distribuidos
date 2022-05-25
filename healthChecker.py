@@ -10,9 +10,10 @@ from datetime import datetime
 def check() -> bool:
     now = datetime.now()
     os.system(
-        'ps aux | grep "python3 monitor.py" | awk \'{printf $2 " " }{for(i=11;i<=NF;i++) printf  $i " "}{print " " }\' > output.txt'
+        'ps aux | grep "python3 monitor.py" | awk \'{printf $2 " " }{for(i=11;i<=NF;i++) printf  $i " "}{print " " }\' > Trash/monitores.txt'
     )
-    with open("output.txt") as f:
+
+    with open("Trash/monitores.txt") as f:
         lines = f.readlines()
         lines.pop()
         lines.pop()
@@ -28,20 +29,18 @@ def check() -> bool:
                 )
                 value = data[p]
                 if state == "R":
-                    data[p] = ("R", value[1], value[2], value[3])
+                    data[p] = (value[0],"R", value[2], value[3], value[4])
                     print(
                         now.strftime("%H:%M:%S")
                         + colored(" " + p + " " + str(value) + " BEATING", "green")
                     )
                 else:
-                    data[p] = ("T", value[1], value[2], value[3])
+                    data[p] = (value[0],"T", value[2], value[3], value[4])
                     print(
                         now.strftime("%H:%M:%S")
                         + colored(" " + p + " " + str(data[p]) + " DIED", "red")
                     )
-
-        elif len(data) > 0:
-            print("start monitor again")
+                    #subprocess.run(["kill", "-USR1",str(data[p][0])])
 
         else:
             print("No monitors are running")
@@ -50,15 +49,26 @@ def check() -> bool:
 def getPairs() -> dict:
 
     os.system(
-        'ps aux | grep "python3 monitor.py" | awk \'{printf $2 " " }{for(i=11;i<=NF;i++) printf  $i " "}{print " " }\'  > output.txt'
+        'ps aux | grep "python3 monitor.py" | awk \'{printf $2 " " }{for(i=11;i<=NF;i++) printf  $i " "}{print " " }\'  > Trash/monitores.txt'
     )
-    with open("output.txt") as f:
+    os.system(
+        "ps aux | grep \"python3 replica.py\" | awk '{print $2}' > Trash/replicas.txt"
+    )
+    pids = list()
+    with open("Trash/replicas.txt") as f:
+        lines = f.readlines()
+        lines.pop()
+        lines.pop()
+        for line in lines:
+            pids.append(line.strip())
+    with open("Trash/monitores.txt") as f:
         lines = f.readlines()
         lines.pop()
         lines.pop()
         keys = list()
         values = list()
         if len(lines) > 0:
+            cont=0
             for line in lines:
                 pid = line.strip().split(" ")[0]
                 keys.append(pid)
@@ -77,7 +87,9 @@ def getPairs() -> dict:
                 for r in re.findall("(55[0-9][0-9] )", line.strip()):
                     if r != pid:
                         port += r + " "
-                values.append((state, sen, addr, port))
+                os.system("echo \""+ pid+" "+pids[cont] +"\" >> Trash/pids.txt")
+                values.append((pids[cont],state, sen, addr, port))
+                cont+=1
             return dict(zip(keys, values))
         else:
             print("No monitor running in this machine")

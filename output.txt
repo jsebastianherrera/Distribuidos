@@ -1,2 +1,0 @@
-28922 sh -c ps aux | grep "python3 monitor.py" | awk '{printf $2 " " }{for(i=11;i<=NF;i++) printf $i " "}{print " " }' > output.txt  
-28924 grep python3 monitor.py  
