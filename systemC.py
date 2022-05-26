@@ -1,26 +1,21 @@
 import argparse
 from getpass import getpass
 import hashlib
+import logging
 import zmq
 from termcolor import colored
 from _thread import *
 
-from Models.Monitor import Monitor
+
 SYSTEM_PORT = 5554
 
 
 def connect(pull: zmq.Socket):
     while True:
         m = pull.recv().decode()
-        if Monitor().checkQualityParameters(
-            type=m.split(":")[0].strip(),
-            value=float(m.split(":")[1].strip()),
-        ):
-            print(colored(m, "green"))
-        else:
-            print(colored(m, "red"))
+        logging.info(m.split(":")[0] + ":" + m.split(":")[1])
+        print(colored(m, "red"))
 
-    
 
 def user_validation(user: str) -> bool:
     with open("DB/allowed.txt") as f:
@@ -39,6 +34,12 @@ def user_validation(user: str) -> bool:
 
 
 if __name__ == "__main__":
+    logging.basicConfig(
+        filename=f"DB/sistemaC.txt",
+        level=logging.INFO,
+        format="{asctime} {levelname:<8} {message}",
+        style="{",
+    )
 
     parser = argparse.ArgumentParser(description="SystemC implementation")
     parser.add_argument("--user", "-u", required=True, type=str, help="Username")
