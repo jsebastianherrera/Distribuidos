@@ -1,2 +1,2 @@
-57253 sh -c ps aux | grep "python3 monitor.py" | awk '{printf $2 " " }{for(i=11;i<=NF;i++) printf $i " "}{print " " }' > Trash/monitores.txt  
-57255 grep python3 monitor.py  
+37394 sh -c ps aux | grep "python3 monitor.py" | awk '{printf $2 " " }{for(i=11;i<=NF;i++) printf $i " "}{print " " }' > Trash/monitores.txt  
+37396 grep python3 monitor.py  
