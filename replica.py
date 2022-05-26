@@ -1,14 +1,9 @@
 import argparse
 from _thread import *
-from _thread import *
-import hashlib
 import logging
-from getpass import getpass
-import os
 import signal
-import subprocess
-from time import sleep
 import zmq
+import re
 from Models.Monitor import Monitor
 from termcolor import colored
 
@@ -22,25 +17,26 @@ socket.setsockopt_string(zmq.SUBSCRIBE, "")
 
 def start(signum, frame):
     print(colored("Starting replica.."))
-    if isinstance(args.port, list):
-        for i in range(0, len(list(args.port))):
-            start_new_thread(connect, (args.addr, str(args.port[i]).strip(), logging, args.sentype))
+    data = re.findall("55[0-9]+", str(args.port))
+    if len(data) > 1:
+        for i in data:
+            start_new_thread(
+                connect, (args.addr, i, logging, args.sentype)
+            )
     else:
-        start_new_thread(connect, (args.addr, args.port, logging, args.sentype))
+        start_new_thread(connect, (args.addr, data[0], logging, args.sentype))
     while 1:
         pass
+
 
 def reload(signum, frame):
     print("Zzz")
     socket.close()
     push.close()
-            
-        
 
 
 def connect(addr: str, port, log: logging, type: str):
     socket.connect(f"tcp://{addr}:{port}")
-
     while True:
         message = socket.recv()
         m = message.decode()
@@ -54,7 +50,9 @@ def connect(addr: str, port, log: logging, type: str):
             else:
                 push.connect(f"tcp://{SYSTEM_IP}:{SYSTEM_PORT}")
                 push.send(m.encode())
-                log.info("Replica red-> SistemaC " + m.split(":")[0] + ":" + m.split(":")[1])
+                log.info(
+                    "Replica red-> SistemaC " + m.split(":")[0] + ":" + m.split(":")[1]
+                )
                 print(colored(m, "red"))
 
         else:
