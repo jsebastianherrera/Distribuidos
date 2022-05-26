@@ -160,6 +160,9 @@ cython_debug/
 #.idea/
 Extra/log.txt
 DB/senOxigeno.txt
+DB/monOxigeno.txt
 DB/senTemperatura.txt
+DB/monTemperatura.txt
 DB/senPh.txt
+DB/monPh.txt
 Trash/
