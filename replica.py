@@ -18,13 +18,10 @@ socket.setsockopt_string(zmq.SUBSCRIBE, "")
 def start(signum, frame):
     print(colored("Starting replica.."))
     data = re.findall("55[0-9]+", str(args.port))
-    if len(data) > 1:
-        for i in data:
+    for i in data:
             start_new_thread(
                 connect, (args.addr, i, logging, args.sentype)
             )
-    else:
-        start_new_thread(connect, (args.addr, data[0], logging, args.sentype))
     while 1:
         pass
 
